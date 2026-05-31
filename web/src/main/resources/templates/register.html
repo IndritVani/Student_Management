@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Register')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div class="card app-card shadow-sm">
+        <div class="card-body">
+            <h1 class="h4 mb-3">Student Registration</h1>
+            <p class="text-muted">Fill in your details and pick a course to register.</p>
+
+            <form th:action="@{/register}" th:object="${registrationRequest}" method="post" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="firstName">First name</label>
+                        <input class="form-control" id="firstName" type="text" th:field="*{firstName}"
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                             th:errors="*{firstName}">First name error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="lastName">Last name</label>
+                        <input class="form-control" id="lastName" type="text" th:field="*{lastName}"
+                               th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                             th:errors="*{lastName}">Last name error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" id="email" type="email" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}">Email error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="dateOfBirth">Date of birth <span class="text-muted">(optional)</span></label>
+                        <input class="form-control" id="dateOfBirth" type="date" th:field="*{dateOfBirth}"
+                               th:classappend="${#fields.hasErrors('dateOfBirth')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfBirth')}"
+                             th:errors="*{dateOfBirth}">Date of birth error</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="course">Course</label>
+                        <select class="form-select" id="course" th:field="*{course}"
+                                th:classappend="${#fields.hasErrors('course')} ? 'is-invalid'">
+                            <option value="">-- Choose a course --</option>
+                            <option th:each="c : ${courses}" th:value="${c.name}" th:text="${c.displayName}">Course</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('course')}"
+                             th:errors="*{course}">Course error</div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button class="btn btn-primary" type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

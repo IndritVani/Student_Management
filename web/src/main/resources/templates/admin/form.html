@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${editing} ? 'Edit student' : 'Add student')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div class="card app-card shadow-sm">
+        <div class="card-body">
+            <h1 class="h4 mb-3" th:text="${editing} ? 'Edit student' : 'Add student'">Add student</h1>
+
+            <p class="text-muted" th:if="${editing and studentNumber != null}">
+                Student number: <strong th:text="${studentNumber}">STU-2025-0001</strong>
+            </p>
+
+            <form th:action="@{${formAction}}" th:object="${studentRequest}" method="post" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="firstName">First name</label>
+                        <input class="form-control" id="firstName" type="text" th:field="*{firstName}"
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}"
+                             th:errors="*{firstName}">error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="lastName">Last name</label>
+                        <input class="form-control" id="lastName" type="text" th:field="*{lastName}"
+                               th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}"
+                             th:errors="*{lastName}">error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" id="email" type="email" th:field="*{email}"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}">error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="dateOfBirth">Date of birth <span class="text-muted">(optional)</span></label>
+                        <input class="form-control" id="dateOfBirth" type="date" th:field="*{dateOfBirth}"
+                               th:classappend="${#fields.hasErrors('dateOfBirth')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfBirth')}"
+                             th:errors="*{dateOfBirth}">error</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="course">Course</label>
+                        <select class="form-select" id="course" th:field="*{course}"
+                                th:classappend="${#fields.hasErrors('course')} ? 'is-invalid'">
+                            <option value="">-- Choose a course --</option>
+                            <option th:each="c : ${courses}" th:value="${c.name}" th:text="${c.displayName}">Course</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('course')}"
+                             th:errors="*{course}">error</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="enrollmentYear">Enrollment year</label>
+                        <input class="form-control" id="enrollmentYear" type="number" th:field="*{enrollmentYear}"
+                               th:classappend="${#fields.hasErrors('enrollmentYear')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('enrollmentYear')}"
+                             th:errors="*{enrollmentYear}">error</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="gpa">GPA <span class="text-muted">(optional)</span></label>
+                        <input class="form-control" id="gpa" type="number" step="0.1" min="0" max="4"
+                               th:field="*{gpa}"
+                               th:classappend="${#fields.hasErrors('gpa')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('gpa')}"
+                             th:errors="*{gpa}">error</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-primary" type="submit"
+                            th:text="${editing} ? 'Save changes' : 'Create student'">Save</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/admin/students}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

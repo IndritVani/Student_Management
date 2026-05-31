@@ -1,0 +1,18 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: student-management
+  labels:
+    app: student-management
+spec:
+  # Build the multi-stage Dockerfile. Push the result into the ImageStream above.
+  source:
+    type: Binary          # fed by: oc start-build student-management --from-dir=. --follow
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: student-management:latest

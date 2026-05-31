@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-management
+  labels:
+    app: student-management
+  annotations:
+    # Resolve the ImageStream tag into the container image and redeploy on new builds.
+    image.openshift.io/triggers: |
+      [{"from":{"kind":"ImageStreamTag","name":"student-management:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"student-management\")].image"}]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: student-management
+  # Recreate (not RollingUpdate): the single H2 file on a RWO volume can't be shared by two pods.
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: student-management
+    spec:
+      containers:
+        - name: student-management
+          image: student-management:latest
+          ports:
+            - containerPort: 8080
+          env:
+            # File-based H2 on the mounted PVC so data survives restarts.
+            - name: DB_URL
+              value: "jdbc:h2:file:/data/students;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE"
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: student-management-admin
+                  key: username
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: student-management-admin
+                  key: password
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /register
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /register
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "384Mi"
+            limits:
+              cpu: "1"
+              memory: "768Mi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: student-management-data

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Registration complete')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container">
+    <div class="card app-card shadow-sm">
+        <div class="card-body text-center">
+            <div class="display-6 mb-3">✅</div>
+            <h1 class="h4">You're registered!</h1>
+            <p class="text-muted">Keep your student number safe &mdash; you'll need it later.</p>
+
+            <div class="alert alert-success d-inline-block mt-2">
+                Your student number is
+                <strong th:text="${student.studentNumber}">STU-2025-0001</strong>
+            </div>
+
+            <dl class="row text-start mt-3 mb-0">
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8" th:text="${student.firstName + ' ' + student.lastName}">Name</dd>
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8" th:text="${student.email}">email</dd>
+                <dt class="col-sm-4">Course</dt>
+                <dd class="col-sm-8" th:text="${student.courseDisplayName}">Course</dd>
+                <dt class="col-sm-4">Enrollment year</dt>
+                <dd class="col-sm-8" th:text="${student.enrollmentYear}">2025</dd>
+            </dl>
+
+            <a class="btn btn-outline-primary mt-3" th:href="@{/register}">Register another student</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
