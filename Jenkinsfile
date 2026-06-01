@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Build & Test') {
             steps {
-                sh 'mvn -B clean install'   // compiles + runs unit tests (Surefire)
+                bat 'mvn -B clean install'   // compiles + runs unit tests (Surefire)
             }
         }
         stage('Archive') {
