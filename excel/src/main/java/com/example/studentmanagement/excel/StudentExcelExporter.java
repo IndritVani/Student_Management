@@ -30,6 +30,11 @@ public class StudentExcelExporter {
             "Date of Birth", "Course", "Enrollment Year", "GPA"
     };
 
+    // Fixed column widths (in characters) per HEADERS column. We avoid autoSizeColumn
+    // because it depends on the AWT font system, which the minimal container runtime
+    // image lacks (fontconfig/freetype) — that throws and yields a 500 on export.
+    private static final int[] COLUMN_WIDTHS = {16, 14, 14, 32, 14, 24, 16, 8};
+
     /**
      * @param students students to export (must not be {@code null})
      * @return the {@code .xlsx} file content as bytes
@@ -43,7 +48,8 @@ public class StudentExcelExporter {
             writeRows(sheet, students);
 
             for (int col = 0; col < HEADERS.length; col++) {
-                sheet.autoSizeColumn(col);
+                // setColumnWidth uses units of 1/256 of a character width.
+                sheet.setColumnWidth(col, COLUMN_WIDTHS[col] * 256);
             }
 
             workbook.write(out);
